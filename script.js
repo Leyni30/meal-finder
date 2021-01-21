@@ -49,8 +49,36 @@ function randomMeal() {
     fetch('https://www.themealdb.com/api/json/v1/1/random.php')
         .then(res => res.json())
         .then(data => {
-            resultHeading.innerHTML += `<br><h3>${data.meals[0].strMeal}</h3>`;
+            //resultHeading.innerHTML += `<br><h3>${data.meals[0].strMeal}</h3>`;
             console.log(data)
+            const ingredients = [];
+            const meal = data.meals[0];
+            for (let i = 1; i <= 20; i++) {
+                if (meal[`strIngredient${i}`]) {
+                    ingredients.push(
+                        `${meal[`strIngredient${i}`]} - ${meal[`strMeasure${i}`]}`);
+                } else {
+                    break;
+                }
+            }
+
+            singleMealEl.innerHTML = `
+            <div class="single-meal">
+            <h1>${meal.strMeal}</h1>
+            <img src="${meal.strMealThumb}"/>
+            <div class="single-meal-info">
+            ${meal.strCategory ? `<p>${meal.strCategory}</p>` : ''}
+            ${meal.strArea ? `<p>${meal.strArea}</p>` : ''}
+            </div>
+            <div class="main">
+            <p>${meal.strInstructions}</p>
+            <h2>Ingredients</h2>
+            <ul>
+            ${ingredients.map(ing => `<li>${ing}</li>`).join('')}
+            </ul>
+            </div>
+            </div>
+            `;
         })
         .catch(err => console.log(err));
 
